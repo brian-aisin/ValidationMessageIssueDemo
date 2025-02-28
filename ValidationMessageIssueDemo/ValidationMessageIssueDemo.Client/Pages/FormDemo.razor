@@ -1,0 +1,55 @@
+﻿@page "/"
+
+<h3>Form Demo</h3>
+
+<EditForm Model="@_toDo" OnSubmit="SubmitFormAsync" FormName="test_form">
+    <FluentValidationValidator @ref="@_fluentValidationValidator" />
+    <ValidationSummary />
+
+    <p>
+        <label>Line</label>
+        <InputSelect @bind-Value="@_toDo.Line">
+            <option value="">-- select a line --</option>
+            @foreach (var line in _lines)
+            {
+                <option value="@line">@line</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => _toDo.Line)" />
+    </p>
+
+    <p>
+        <label>Name</label>
+        <InputText @bind-Value="@_toDo.Name" />
+        <ValidationMessage For="@(() => _toDo.Name)" />
+    </p>
+
+    <p>
+        <label>Description</label>
+        <InputTextArea @bind-Value="@_toDo.Description" />
+        <ValidationMessage For="@(() => _toDo.Description)" />
+    </p>
+
+    <button type="submit">Save</button>
+</EditForm>
+
+@code {
+    private ToDo? _toDo = new();
+
+    private List<string> _lines = new()
+    {
+        "Line 1",
+        "Line 2",
+        "Line 3"
+    };
+
+    private FluentValidationValidator? _fluentValidationValidator;
+
+    private async Task SubmitFormAsync()
+    {
+        if (await _fluentValidationValidator!.ValidateAsync())
+        {
+            Console.WriteLine("Form submitted successfully!");
+        }
+    }
+}
